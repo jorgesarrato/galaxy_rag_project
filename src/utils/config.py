@@ -13,3 +13,9 @@ class Config:
     GENERATION_MODEL = "Qwen/Qwen2.5-1.5B-Instruct"
     
     DATA_DIR = os.getenv("DATA_DIR")
+    
+    DB_DIR = os.getenv("DB_DIR")
+    
+    CHUNK_SIZE = 500
+    
+    CHUNK_OVERLAP = 50
