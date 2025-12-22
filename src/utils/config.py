@@ -19,3 +19,5 @@ class Config:
     CHUNK_SIZE = 500
     
     CHUNK_OVERLAP = 50
+    
+    N_CHUNKS_RETRIEVAL = 3
