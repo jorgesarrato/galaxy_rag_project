@@ -10,7 +10,11 @@ class Config:
     
     DEBUG = os.getenv("ENV") == "development"
     
-    GENERATION_MODEL = "Qwen/Qwen2.5-1.5B-Instruct"
+    MODEL_DIR = os.getenv("MODEL_DIR")
+    
+    GENERATION_MODEL = "Qwen2.5-7B-Instruct-Q8_0.gguf" 
+    
+    LLM_CONTEXT = 4096
     
     DATA_DIR = os.getenv("DATA_DIR")
     
