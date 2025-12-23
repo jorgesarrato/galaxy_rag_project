@@ -16,8 +16,10 @@ class Config:
     
     DB_DIR = os.getenv("DB_DIR")
     
-    CHUNK_SIZE = 500
+    CHUNK_SIZE = 1000
     
-    CHUNK_OVERLAP = 50
+    CHUNK_OVERLAP = 100
     
     N_CHUNKS_RETRIEVAL = 3
+    
+    PARSER_TYPE = "pymupdf4llm"
