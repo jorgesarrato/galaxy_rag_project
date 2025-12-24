@@ -12,9 +12,9 @@ class Config:
     
     MODEL_DIR = os.getenv("MODEL_DIR")
     
-    GENERATION_MODEL = "Qwen2.5-7B-Instruct-Q8_0.gguf" 
+    GENERATION_MODEL = "qwen2.5-7b-instruct-q2_k.gguf" 
     
-    LLM_CONTEXT = 4096
+    LLM_CONTEXT = 2048
     
     DATA_DIR = os.getenv("DATA_DIR")
     
@@ -24,6 +24,6 @@ class Config:
     
     CHUNK_OVERLAP = 100
     
-    N_CHUNKS_RETRIEVAL = 3
+    N_CHUNKS_RETRIEVAL = 2
     
     PARSER_TYPE = "pymupdf4llm"

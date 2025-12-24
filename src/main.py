@@ -36,7 +36,7 @@ def main():
         context_chunks = retriever.get_relevant_context(query)
         
         print("Generating answer...")
-        answer = generator.generate_answer(query, context_chunks)
+        answer = generator.generate_with_stats(query, context_chunks)
         
         print("\n" + "-"*30)
         print(f"ANSWER:\n{answer}")
