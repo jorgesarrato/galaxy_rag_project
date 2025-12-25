@@ -17,7 +17,7 @@ class Retriever:
         with open(f"{Config.DB_DIR}/metadata.json", "r", encoding="utf-8") as f:
             self.metadata = json.load(f)
 
-    def get_initial_relevant_context(self, query, top_n_chunks=Config.N_CHUNKS_RETRIEVAL_INITIAL):
+    def get_initial_relevant_context(self, query, top_n_chunks=Config.N_CHUNKS_RETRIEVAL_INITIAL, allowed_files=None):
         query_vec = self.model.encode([query])
         
         # Euclidean distance
@@ -34,10 +34,15 @@ class Retriever:
                     "score": float(distances[0][i])
                 })
         
+        if not allowed_files:
+            return results
+        
+        results = [res for res in results if res['source'] in allowed_files]
+
         return results
 
-    def get_relevant_context(self, query):
-            initial_results = self.get_initial_relevant_context(query, top_n_chunks=Config.N_CHUNKS_RETRIEVAL_INITIAL) 
+    def get_relevant_context(self, query, allowed_files=None):
+            initial_results = self.get_initial_relevant_context(query, top_n_chunks=Config.N_CHUNKS_RETRIEVAL_INITIAL, allowed_files=allowed_files) 
             
             pairs = [[query, res['text']] for res in initial_results]
             

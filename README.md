@@ -11,6 +11,7 @@ A CPU-optimized Retrieval-Augmented Generation (RAG) system for analyzing scient
 - **Verified Citations:** Instructed to include precise references to consulted documents.
 - **Stream Generation:** Improved latency feeling by printing each token right after generation.
 - **User Interface:** Gradio chatbot interface.
+- **Paper Selection:** If desired, you can choose specific papers to allow for retrieval. Only practical for small paper databases.
 
 
 ## Models

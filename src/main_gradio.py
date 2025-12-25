@@ -6,16 +6,18 @@ from generator import RAGGenerator
 from utils.config import Config
 import time
 
+all_papers = [file_path.split("/")[-1] for file_path in os.listdir(Config.DATA_DIR)]
+
 pipeline = IngestionPipeline()
 pipeline.run()
 
 retriever = Retriever()
 generator = RAGGenerator()
 
-def predict(message, history):
+def predict(message, history, selected_papers):
     start_retrieval = time.perf_counter()
     gr.Info("Searching papers...")
-    chunks = retriever.get_relevant_context(message)
+    chunks = retriever.get_relevant_context(message, selected_papers)
     retrieval_time = time.perf_counter() - start_retrieval
     
     final_text = ""
@@ -37,11 +39,25 @@ def predict(message, history):
     )
     yield final_text + stats_html
 
+examples = [
+    ["What is the MAGICC project?", all_papers],
+    ["Explain dark matter cored profiles.", all_papers]
+]
+
 demo = gr.ChatInterface(
     fn=predict,
     title="Astrophysics Research Assistant",
     description="Ask questions about galactic evolution and dark matter based on your local papers.",
-    examples=["What is the MAGICC project?", "Explain cored dark matter profiles."]
+    examples=examples,
+    additional_inputs=[
+        gr.CheckboxGroup(
+            choices=all_papers, 
+            value=all_papers,
+            label="Source Papers",
+            info="Select which papers to include in the search context."
+        )
+    ],
+    additional_inputs_accordion="Filter Research Papers"
 )
 
 if __name__ == "__main__":
