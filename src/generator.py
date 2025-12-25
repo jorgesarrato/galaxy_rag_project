@@ -56,7 +56,7 @@ class RAGGenerator:
             )
         return RAGGenerator._instance
 
-    def generate_answer(self, query, context_chunks):
+    def generate_answer(self, query, context_chunks, app_mode = False):
 
         llm = self._load_model()
 
@@ -81,45 +81,25 @@ class RAGGenerator:
             stream=True
         )
         
-        print("Answer: ", end="", flush=True)
+        if not app_mode:
+            print("Answer: ", end="", flush=True)
+
         full_text = ""
         for chunk in stream:
             delta = chunk['choices'][0]['delta']
             if 'content' in delta:
                 text_part = delta['content']
-                print(text_part, end="", flush=True) # Print immediately
                 full_text += text_part
+                if app_mode:
+                    yield full_text, None 
+                else:
+                    print(text_part, end="", flush=True)
 
         end_time = time.time()
         elapsed_time = end_time - start_time
 
-        print(f"\n\nTook {elapsed_time:.2f} seconds to generate answer.")
-
-        return
-
-    
-                
-        return
-
-
-
-        import time
-        start_time = time.time()
-
-        response = llm.create_chat_completion(
-            messages=messages,
-            temperature=Config.TEMPERATURE,
-            top_p=Config.TOP_P,
-            max_tokens=Config.MAX_TOKENS
-        )
-
-        end_time = time.time()
-        elapsed_time = end_time - start_time
-
-        print(f"Took {elapsed_time:.2f} seconds to generate answer.")
-
-        return response["choices"][0]["message"]["content"]
-
-    
-                
-        return response["choices"][0]["message"]["content"]
+        if app_mode:
+            yield full_text, elapsed_time
+        else:
+            print(f"\n\nTook {elapsed_time:.2f} seconds to generate answer.\n\n")
+            return

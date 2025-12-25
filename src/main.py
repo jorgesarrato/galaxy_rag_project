@@ -35,7 +35,8 @@ def main():
         context_chunks = retriever.get_relevant_context(query)
         
         print("Generating answer...")
-        generator.generate_answer(query, context_chunks)
+        for _ in generator.generate_answer(query, context_chunks, app_mode=False):
+            pass
 
 if __name__ == "__main__":
     main()
