@@ -85,8 +85,6 @@ def process_pdf(file_path):
         for i, page in enumerate(pages_data):
             page_num = i + 1
             clean_text = clean_scientific_text(page['text'])
-            print("\n\n -------- \n\n")
-            print(clean_text)
             for chunk in chunk_text(clean_text):
                 all_chunks_with_metadata.append({
                     "text": chunk,

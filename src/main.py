@@ -7,12 +7,11 @@ from utils.config import Config
 def main():
     index_path = os.path.join(Config.DB_DIR, 'docs.index')
     
-    if not os.path.exists(index_path):
-        print(" Index not found. Starting Vectorizing papers.")
-        pipeline = IngestionPipeline()
-        pipeline.run()
-    else:
-        print("Existing Index found. Loading.")
+
+    print("Checking for new source files...")
+    pipeline = IngestionPipeline()
+    pipeline.run()
+
 
     retriever = Retriever()
     generator = RAGGenerator()
@@ -36,11 +35,7 @@ def main():
         context_chunks = retriever.get_relevant_context(query)
         
         print("Generating answer...")
-        answer = generator.generate_with_stats(query, context_chunks)
-        
-        print("\n" + "-"*30)
-        print(f"ANSWER:\n{answer}")
-        print("-"*30 + "\n")
+        generator.generate_answer(query, context_chunks)
 
 if __name__ == "__main__":
     main()

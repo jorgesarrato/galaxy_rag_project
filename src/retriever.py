@@ -2,19 +2,22 @@ import faiss
 import json
 import numpy as np
 from sentence_transformers import SentenceTransformer
+from sentence_transformers import CrossEncoder
 from utils.config import Config
 
 class Retriever:
     def __init__(self):
-        print("Loading chunk database")
+        print("Loading chunk database...")
         self.model = SentenceTransformer(Config.MODEL_NAME)
+
+        self.reranker = CrossEncoder(Config.RERANKER_MODEL_NAME)
         
         self.index = faiss.read_index(f"{Config.DB_DIR}/docs.index")
         
         with open(f"{Config.DB_DIR}/metadata.json", "r", encoding="utf-8") as f:
             self.metadata = json.load(f)
 
-    def get_relevant_context(self, query, top_n_chunks=Config.N_CHUNKS_RETRIEVAL):
+    def get_initial_relevant_context(self, query, top_n_chunks=Config.N_CHUNKS_RETRIEVAL_INITIAL):
         query_vec = self.model.encode([query])
         
         # Euclidean distance
@@ -32,6 +35,20 @@ class Retriever:
                 })
         
         return results
+
+    def get_relevant_context(self, query):
+            initial_results = self.get_initial_relevant_context(query, top_n_chunks=Config.N_CHUNKS_RETRIEVAL_INITIAL) 
+            
+            pairs = [[query, res['text']] for res in initial_results]
+            
+            scores = self.reranker.predict(pairs)
+            
+            for i, res in enumerate(initial_results):
+                res['rerank_score'] = scores[i]
+                
+            initial_results.sort(key=lambda x: x['rerank_score'], reverse=True)
+            
+            return initial_results[:Config.N_CHUNKS_RETRIEVAL_FINAL]
 
     def format_context(self, retrieved_results):
         context_blocks = []
