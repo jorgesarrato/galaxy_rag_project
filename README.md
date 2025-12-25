@@ -10,6 +10,7 @@ A CPU-optimized Retrieval-Augmented Generation (RAG) system for analyzing scient
 - **Incremental Indexing:** Only processes new PDFs added to the data directory.
 - **Verified Citations:** Instructed to include precise references to consulted documents.
 - **Stream Generation:** Improved latency feeling by printing each token right after generation.
+- **User Interface:** Gradio chatbot interface.
 
 
 ## Models
