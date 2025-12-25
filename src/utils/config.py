@@ -12,7 +12,7 @@ class Config:
     
     MODEL_DIR = os.getenv("MODEL_DIR")
     
-    GENERATION_MODEL = "qwen2.5-7b-instruct-q2_k.gguf" 
+    GENERATION_MODEL = "Qwen2.5-3B-Instruct-Q4_K_M.gguf" 
     
     LLM_CONTEXT = 2048
     

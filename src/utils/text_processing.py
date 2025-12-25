@@ -1,24 +1,36 @@
 import re
 from utils.config import Config
+from langchain_text_splitters import RecursiveCharacterTextSplitter
 
-def clean_scientific_text(text):
-    """# Fix artificially broken words
+def clean_scientific_text(text): # Only tested for pymupdf4llm for now, no idea how mark-pdf ouput looks like
+    # Fix artificially broken words
     text = re.sub(r'(\w+)-\s*\n\s*(\w+)', r'\1\2', text)
     
-    text = re.sub(r'(\w+)-\s+(\w+)', r'\1-\2', text)""" # Marker should handle this better?
-    
+    text = re.sub(r'(\w+)-\s+(\w+)', r'\1-\2', text)
+
+    text = re.sub(r"\*\*==> picture \[\d+\s*x\s*\d+\] intentionally omitted <==\*\*", "", text)
+        
     text = re.sub(r'\s+', ' ', text) # Normalize spaces
     
     return text.strip()
     
 def chunk_text(text):
-    chunks = []
+    splitter = RecursiveCharacterTextSplitter(
+        chunk_size=Config.CHUNK_SIZE,
+        chunk_overlap=Config.CHUNK_OVERLAP,
+        separators=["\n\n", "\n", ". ", " ", ""], 
+        length_function=len
+    )
+
+    chunks = splitter.split_text(text)
+
+    """chunks = []
     start = 0
     while start < len(text):
         end = start + Config.CHUNK_SIZE
         chunk = text[start:end]
         chunks.append(chunk)
-        start += (Config.CHUNK_SIZE - Config.CHUNK_OVERLAP)
+        start += (Config.CHUNK_SIZE - Config.CHUNK_OVERLAP)"""
     return chunks
 
 def get_marker_converter():
@@ -68,11 +80,13 @@ def process_pdf(file_path):
         print(f"Using PyMuPDF4LLM for {filename}...")
         import pymupdf.layout
         import pymupdf4llm
-        pages_data = pymupdf4llm.to_markdown(file_path, page_chunks=True)
+        pages_data = pymupdf4llm.to_markdown(file_path, page_chunks=True, header=False, footer=False)
         
         for i, page in enumerate(pages_data):
             page_num = i + 1
             clean_text = clean_scientific_text(page['text'])
+            print("\n\n -------- \n\n")
+            print(clean_text)
             for chunk in chunk_text(clean_text):
                 all_chunks_with_metadata.append({
                     "text": chunk,
@@ -84,4 +98,4 @@ def process_pdf(file_path):
 
 if __name__ == "__main__":
     import os
-    process_pdf(os.path.join(Config.DATA_DIR,'2012_Magicc.pdf'))
+    process_pdf(os.path.join(Config.DATA_DIR,'2012_Stinson.pdf'))
