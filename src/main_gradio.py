@@ -85,6 +85,8 @@ with gr.Blocks() as demo:
             
         for partial_answer, duration in generator.generate_answer(message, chunks, app_mode=True):
             history[-1]["content"][0]["text"] = partial_answer
+            if duration is not None:
+                gen_duration = duration
             yield history
 
         stats_html = (
