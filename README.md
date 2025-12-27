@@ -42,14 +42,35 @@ pip install --upgrade pip
 pip install -r requirements.txt
 ```
 
+Create a .env file with the following content:
+
+```bash
+HF_TOKEN=#Your huggingface token
+DATA_DIR=#Path to PDFs
+DB_DIR=#Path to store vector database
+MODEL_DIR=#Path to llm models
+```
+
 Store llm models:
 
 ```bash
-mkdir models
-hf download bartowski/Qwen2.5-3B-Instruct-GGUF --include "Qwen2.5-3B-Instruct-Q4_K_M.gguf" --local-dir ./models 
+mkdir # your MODEL_DIR
+hf download bartowski/Qwen2.5-3B-Instruct-GGUF --include "Qwen2.5-3B-Instruct-Q4_K_M.gguf" --local-dir # your MODEL_DIR
 ```
 
 Theoretically the pipeline will download your model if you include it in the MODEL_MAP.
 In practice I found it's faster to call hf download manually.
 
+## Usage
 
+Execute in terminal mode:
+
+```bash
+python src/main.py
+```
+
+Or in app mode, and open the provided local link to chat:
+
+```bash
+python src/main_gradio.py
+```
