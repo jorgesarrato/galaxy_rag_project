@@ -8,11 +8,13 @@ class RAGGenerator:
 
     MODEL_MAP = {
         "Qwen2.5-7B-Instruct-Q8_0.gguf": "bartowski/Qwen2.5-7B-Instruct-GGUF",
-        "Meta-Llama-3.1-8B-Instruct-Q6_K.gguf": "bartowski/Meta-Llama-3.1-8B-Instruct-GGUF"
+        "Meta-Llama-3.1-8B-Instruct-Q6_K.gguf": "bartowski/Meta-Llama-3.1-8B-Instruct-GGUF",
+        "Qwen2.5-3B-Instruct-Q4_K_M.gguf": "bartowski/Qwen2.5-3B-Instruct-GGUF"
     }
 
     def __init__(self):
-        pass
+        self._ensure_model_exists()
+        return
 
     def _ensure_model_exists(self):
         model_filename = Config.GENERATION_MODEL
@@ -27,12 +29,11 @@ class RAGGenerator:
 
             print(f"Downloading from Hugging Face: {repo_id}")
             
-            downloaded_path = hf_hub_download(
+            _ = hf_hub_download(
                 repo_id=repo_id,
                 filename=model_filename,
-                local_dir=Config.MODEL_DIR,
-                local_dir_use_symlinks=False 
-            ) # For some reason download is too slow, manual download is faster. Need to fix.
+                local_dir=Config.MODEL_DIR
+                )
             print(f"Download complete.")
         
         return model_path

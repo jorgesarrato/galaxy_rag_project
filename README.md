@@ -13,9 +13,43 @@ A CPU-optimized Retrieval-Augmented Generation (RAG) system for analyzing scient
 - **User Interface:** Gradio chatbot interface.
 - **Paper Selection:** If desired, you can choose specific papers to allow for retrieval.
 
-
 ## Models
 
 - **LLM:** Qwen2.5-3B-Instruct (Quantized Q4_K_M) via `llama-cpp-python`
 - **Embeddings:** `sentence-transformers/all-MiniLM-L6-v2`
 - **Reranker** `cross-encoder/ms-marco-MiniLM-L-6-v2`
+
+## Installation
+
+This project is built using **Python 3.10.12**. Use a virtual environment to avoid conflicts.
+
+```bash
+git clone https://github.com/jorgesarrato/galaxy_rag_project.git
+cd rag_project
+```
+
+If you want to use a virtual environment:
+
+```bash
+python3 -m venv rag_env
+source rag_env/bin/activate
+```
+
+Install dependencies:
+
+```bash
+pip install --upgrade pip
+pip install -r requirements.txt
+```
+
+Store llm models:
+
+```bash
+mkdir models
+hf download bartowski/Qwen2.5-3B-Instruct-GGUF --include "Qwen2.5-3B-Instruct-Q4_K_M.gguf" --local-dir ./models 
+```
+
+Theoretically the pipeline will download your model if you include it in the MODEL_MAP.
+In practice I found it's faster to call hf download manually.
+
+
