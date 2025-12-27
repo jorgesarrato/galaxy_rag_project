@@ -10,8 +10,6 @@ class Config:
     
     RERANKER_MODEL_NAME = "cross-encoder/ms-marco-MiniLM-L-6-v2"
     
-    DEBUG = os.getenv("ENV") == "development"
-    
     MODEL_DIR = os.getenv("MODEL_DIR")
     
     GENERATION_MODEL = "Qwen2.5-3B-Instruct-Q4_K_M.gguf" 
