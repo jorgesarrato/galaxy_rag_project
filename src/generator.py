@@ -57,18 +57,20 @@ class RAGGenerator:
             )
         return RAGGenerator._instance
 
-    def generate_answer(self, query, context_chunks, app_mode = False):
 
+    def generate_answer(self, query, context_chunks):
         llm = self._load_model()
 
         context_text = ""
         for chunk in context_chunks:
-            context_text += f"\n---\n[Source: {chunk['source']}, Page: {chunk['page']}]\n"
-            context_text += f"Content: {chunk['text']}\n"
+            context_text += (
+                f"\n---\n[Source: {chunk['source']}, Page: {chunk['page']}]\n"
+                f"{chunk['text']}\n"
+            )
 
         messages = [
             {"role": "system", "content": Config.SYSTEM_PROMPT},
-            {"role": "user", "content": f"Context: {context_text}\n\nQuestion: {query}"}
+            {"role": "user", "content": f"Context:\n{context_text}\n\nQuestion: {query}"}
         ]
 
         import time
@@ -81,26 +83,14 @@ class RAGGenerator:
             max_tokens=Config.MAX_TOKENS,
             stream=True
         )
-        
-        if not app_mode:
-            print("Answer: ", end="", flush=True)
 
         full_text = ""
         for chunk in stream:
-            delta = chunk['choices'][0]['delta']
-            if 'content' in delta:
-                text_part = delta['content']
-                full_text += text_part
-                if app_mode:
-                    yield full_text, None 
-                else:
-                    print(text_part, end="", flush=True)
+            delta = chunk["choices"][0]["delta"]
+            if "content" in delta:
+                token = delta["content"]
+                full_text += token
+                yield token
 
-        end_time = time.time()
-        elapsed_time = end_time - start_time
-
-        if app_mode:
-            yield full_text, elapsed_time
-        else:
-            print(f"\n\nTook {elapsed_time:.2f} seconds to generate answer.\n\n")
-            return
+        elapsed = time.time() - start_time
+        return full_text, elapsed
