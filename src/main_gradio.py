@@ -1,15 +1,11 @@
 import gradio as gr
 import os
-from vectorize_pdf import IngestionPipeline
 from retriever import Retriever
 from generator import RAGGenerator
 from utils.config import Config
 import time
 
 all_papers = sorted([file_path.split("/")[-1] for file_path in os.listdir(Config.DATA_DIR)])
-
-pipeline = IngestionPipeline()
-pipeline.run()
 
 retriever = Retriever()
 generator = RAGGenerator()
