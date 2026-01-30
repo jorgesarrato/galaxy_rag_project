@@ -21,6 +21,8 @@ jobs:
       run: |
         docker run -d -p 8000:8000 --name rag_test rag-api
         sleep 10
+        docker ps -a
+        docker logs rag_test
 
     - name: Health check
       run: |
