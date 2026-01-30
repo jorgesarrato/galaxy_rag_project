@@ -10,7 +10,7 @@ class Config:
     
     RERANKER_MODEL_NAME = "cross-encoder/ms-marco-MiniLM-L-6-v2"
     
-    MODEL_DIR = os.getenv("MODEL_DIR")
+    MODEL_DIR = os.getenv("MODEL_DIR","llm_models")
     
     GENERATION_MODEL = "Qwen2.5-3B-Instruct-Q4_K_M.gguf" 
     
@@ -23,9 +23,9 @@ class Config:
     TEMPERATURE = 0.0
     MAX_TOKENS = 512
     
-    DATA_DIR = os.getenv("DATA_DIR")
+    DATA_DIR = os.getenv("DATA_DIR", "data")
     
-    DB_DIR = os.getenv("DB_DIR")
+    DB_DIR = os.getenv("DB_DIR", "vectors")
     
     CHUNK_SIZE = 1000
     

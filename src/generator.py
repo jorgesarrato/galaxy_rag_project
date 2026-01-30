@@ -19,6 +19,8 @@ class RAGGenerator:
     def _ensure_model_exists(self):
         model_filename = Config.GENERATION_MODEL
         model_path = os.path.join(Config.MODEL_DIR, model_filename)
+        
+        os.makedirs(Config.MODEL_DIR, exist_ok=True)
 
         if not os.path.exists(model_path):
             print(f"Model {model_filename} not found.")
