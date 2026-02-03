@@ -61,6 +61,10 @@ hf download bartowski/Qwen2.5-3B-Instruct-GGUF --include "Qwen2.5-3B-Instruct-Q4
 Theoretically the pipeline will download your model if you include it in the MODEL_MAP.
 In practice I found it's faster to call hf download manually.
 
+## Data Placing
+
+Store your PDF files in data/ or the folder you defined in your .env as DATA_DIR
+
 ## Usage
 
 Execute in terminal mode:
@@ -74,3 +78,85 @@ Or in app mode, and open the provided local link to chat:
 ```bash
 python src/main_gradio.py
 ```
+
+## Running with Docker
+
+The project can also be run as a **containerized service**, which avoids local dependency issues and ensures reproducibility across systems.
+
+With this option you plan to deploy the API as a service
+
+### Build the Docker image
+
+If you defined custom DATA_DIR or DB_DIR, you need to modify "data/" by your new data path in this line from Dockerfile
+
+```
+COPY data/ ./data 
+```
+
+From the project root:
+
+```bash
+docker build -t rag-api .
+```
+
+### Run ingestion (one time)
+
+To ingest your PDF collection and build the vector index (replace with your paths):
+
+```docker run --rm \
+  -v /path/to/pdfs:/app/pdfs \
+  -v /path/to/vectors:/app/vectors \
+  rag-api python ingest.py
+```
+
+### Run the API service
+
+Start the API:
+
+```docker run -d \
+  -p 8000:8000 \
+  -v /path/to/pdfs:/data/pdfs \
+  -v /path/to/vectors:/data/vectors
+  rag-api
+```
+
+The API will be available at:
+
+```
+http://localhost:8000
+```
+
+### Health Check
+
+Veify the service is running:
+
+```
+curl http://localhost:8000/health
+```
+
+### Query the API
+
+Send a query. Add The list of papers you want to include in your query:
+
+```
+curl -X POST http://localhost:8000/query \
+  -H "Content-Type: application/json" \
+  -d '{
+    "query": "Explain the physical motivation for cored dark matter profiles",
+    "selected_papers": [
+      "Rocha_2013_SIDM.pdf",
+      "Kaplinghat_2016_DMcores.pdf",
+      "Bullock_2017_CDMreview.pdf"
+    ]
+  }'
+```
+
+Or don't add it if you want to look through all your collection:
+
+```curl -X POST http://localhost:8000/query \
+  -H "Content-Type: application/json" \
+  -d '{"query":"Explain abundance matching"}'
+```
+
+
+
