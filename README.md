@@ -2,7 +2,7 @@
 
 A CPU-optimized Retrieval-Augmented Generation (RAG) system for analyzing scientific papers.
 
-[Galaxy RAG in action!](https://github.com/user-attachments/assets/64053713-26b3-4ba8-bf47-c9ce81cc929b)
+[Example_Recording.webm](https://github.com/user-attachments/assets/64053713-26b3-4ba8-bf47-c9ce81cc929b)
 
 ## Features
 
