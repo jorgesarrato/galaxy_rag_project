@@ -2,6 +2,8 @@
 
 A CPU-optimized Retrieval-Augmented Generation (RAG) system for analyzing scientific papers.
 
+[Example_Recording.webm](https://github.com/user-attachments/assets/64053713-26b3-4ba8-bf47-c9ce81cc929b)
+
 ## Features
 
 - **CPU Optimized:** Runs efficiently on local hardware (tested on 6 physical cores) using `Qwen2.5-3B` (GGUF). Answers take 15-30 seconds to generate.
