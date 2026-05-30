@@ -85,62 +85,73 @@ python src/main_gradio.py
 
 The project can also be run as a **containerized service**, which avoids local dependency issues and ensures reproducibility across systems.
 
-With this option you plan to deploy the API as a service
+### Prerequisites
 
-### Build the Docker image
+1. Copy the environment template and add your Hugging Face token:
 
-If you defined custom DATA_DIR or DB_DIR, you need to modify "data/" by your new data path in this line from Dockerfile
-
+```bash
+cp .env.example .env
+# Edit .env and set HF_TOKEN to your Hugging Face token
 ```
-COPY data/ ./data 
+
+2. Download the LLM model:
+
+```bash
+mkdir -p llm_models
+huggingface-cli download bartowski/Qwen2.5-3B-Instruct-GGUF \
+  --include "Qwen2.5-3B-Instruct-Q4_K_M.gguf" \
+  --local-dir llm_models
 ```
 
-From the project root:
+3. Place your PDF files in the `data/` directory.
+
+### Run with Docker Compose (recommended)
+
+```bash
+docker compose up --build
+```
+
+This will:
+- Build the image with your PDFs baked in
+- Mount `llm_models/` and `vectors/` from your host
+- Run ingestion automatically if no vector index exists
+- Start the API on port 8000
+
+### Run with Docker manually
+
+Build the image:
 
 ```bash
 docker build -t rag-api .
 ```
 
-### Run ingestion (one time)
+Run the container:
 
-To ingest your PDF collection and build the vector index (replace with your paths):
-
-```docker run --rm \
-  -v /path/to/pdfs:/app/pdfs \
-  -v /path/to/vectors:/app/vectors \
-  rag-api python ingest.py
-```
-
-### Run the API service
-
-Start the API:
-
-```docker run -d \
-  -p 8000:8000 \
-  -v /path/to/pdfs:/data/pdfs \
-  -v /path/to/vectors:/data/vectors
+```bash
+docker run -d -p 8000:8000 \
+  --env-file .env \
+  -e DATA_DIR=data \
+  -e DB_DIR=vectors \
+  -e MODEL_DIR=llm_models \
+  -v ./llm_models:/app/llm_models \
+  -v ./vectors:/app/vectors \
+  --name rag-api \
   rag-api
-```
-
-The API will be available at:
-
-```
-http://localhost:8000
 ```
 
 ### Health Check
 
-Veify the service is running:
+Verify the service is running:
 
-```
+```bash
 curl http://localhost:8000/health
 ```
 
 ### Query the API
 
-Send a query. Add The list of papers you want to include in your query:
+Send a query with specific papers:
 
-```
+```bash
 curl -X POST http://localhost:8000/query \
   -H "Content-Type: application/json" \
   -d '{
@@ -153,9 +164,10 @@ curl -X POST http://localhost:8000/query \
   }'
 ```
 
-Or don't add it if you want to look through all your collection:
+Or query across all papers:
 
-```curl -X POST http://localhost:8000/query \
+```bash
+curl -X POST http://localhost:8000/query \
   -H "Content-Type: application/json" \
   -d '{"query":"Explain abundance matching"}'
 ```

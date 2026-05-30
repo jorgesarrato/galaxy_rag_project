@@ -1,5 +1,8 @@
 __pycache__/
 .git/
 .env
-*.pdf
+rag_env/
+llm_models/
+vectors/
+Example_Recording.webm
 

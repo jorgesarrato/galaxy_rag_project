@@ -19,23 +19,27 @@ jobs:
 
     - name: Run container and health check
       run: |
-        docker run --rm -v vectors:/app/vectors rag-api python ingest.py
-        docker run -d -p 8000:8000 --name rag_test -v vectors:/app/vectors rag-api
-        
+        docker run -d -p 8000:8000 --name rag_test \
+          -e HF_TOKEN=test \
+          -e DATA_DIR=data \
+          -e DB_DIR=vectors \
+          -e MODEL_DIR=llm_models \
+          rag-api
+
         for i in {1..60}; do
           if curl -sf http://localhost:8000/health; then
             echo "API is ready"
             exit 0
           fi
-            echo "Waiting for API..."
-            sleep 2
-          done
+          echo "Waiting for API..."
+          sleep 2
+        done
 
         echo "API did not become ready in time"
         docker logs rag_test
         exit 1
 
     - name: Stop container
+      if: always()
       run: |
-        docker stop rag_test
-
+        docker stop rag_test || true

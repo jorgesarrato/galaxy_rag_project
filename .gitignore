@@ -1,4 +1,6 @@
 .env
 download_papers.py
-rag_env
+rag_env/
+llm_models/
+vectors/
 

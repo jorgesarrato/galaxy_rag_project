@@ -1,0 +1,20 @@
+services:
+  rag-api:
+    build: .
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./llm_models:/app/llm_models
+      - ./vectors:/app/vectors
+    env_file:
+      - .env
+    environment:
+      - DATA_DIR=data
+      - DB_DIR=vectors
+      - MODEL_DIR=llm_models
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 5s
+      start_period: 120s
+      retries: 3
