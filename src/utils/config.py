@@ -12,9 +12,9 @@ class Config:
     
     MODEL_DIR = os.getenv("MODEL_DIR","llm_models")
     
-    GENERATION_MODEL = "Qwen2.5-3B-Instruct-Q4_K_M.gguf" 
+    GENERATION_MODEL = "Qwen3-30B-A3B-Instruct-2507-Q4_K_M.gguf" 
     
-    LLM_CONTEXT = 2048
+    LLM_CONTEXT = 4098
     N_THREADS = 5
     N_BATCH = 1024
     N_GPU_LAYERS = 0

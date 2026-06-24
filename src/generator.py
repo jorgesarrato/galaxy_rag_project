@@ -9,7 +9,8 @@ class RAGGenerator:
     MODEL_MAP = {
         "Qwen2.5-7B-Instruct-Q8_0.gguf": "bartowski/Qwen2.5-7B-Instruct-GGUF",
         "Meta-Llama-3.1-8B-Instruct-Q6_K.gguf": "bartowski/Meta-Llama-3.1-8B-Instruct-GGUF",
-        "Qwen2.5-3B-Instruct-Q4_K_M.gguf": "bartowski/Qwen2.5-3B-Instruct-GGUF"
+        "Qwen2.5-3B-Instruct-Q4_K_M.gguf": "bartowski/Qwen2.5-3B-Instruct-GGUF",
+        "Qwen3-30B-A3B-Instruct-2507-Q4_K_M.gguf": "bartowski/Qwen3-30B-A3B-Instruct-2507-GGUF"
     }
 
     def __init__(self):
@@ -53,7 +54,7 @@ class RAGGenerator:
                 n_gpu_layers=Config.N_GPU_LAYERS,
                 verbose=False,
                 logits_all=False,
-                use_mlock=True,
+                use_mlock=False,
                 use_mmap=True,
 
             )
